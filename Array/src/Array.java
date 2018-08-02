@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /*
  *@author:
  *@create: 2018-07-25 22:07
@@ -102,7 +104,7 @@ public class Array {
                 j++;
             }
         }
-        return indexs;
+        return Arrays.copyOfRange(indexs, 0, j);
     }
 
     // 删除索引位置元素并返回该元素值
@@ -197,8 +199,12 @@ public class Array {
         int ele = arr.find(1);
         System.out.println("find: " + ele);
 
-        int[] els = arr.findAll(1);
-        System.out.println(els);
+        int[] indexs = arr.findAll(1);
+        System.out.print("Find all indexs: [");
+        for (i = 0; i < indexs.length; i++) {
+            System.out.print(indexs[i] + ", ");
+        }
+        System.out.println("]");
 
         arr.remove(9);
         System.out.println(arr);
