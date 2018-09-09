@@ -5,8 +5,8 @@ import java.util.Arrays;
  *@create: 2018-07-25 22:07
  *@description:
  **/
-public class Array {
-    private int[] data;
+public class Array<E> {
+    private E[] data;
     private int size;// 当前下标值
 
     public Array(){
@@ -14,7 +14,7 @@ public class Array {
     }
 
     public Array(int capacity){
-        this.data = new int[capacity];
+        this.data = (E[])new Object[capacity];
         this.size = 0;
     }
 
@@ -31,16 +31,16 @@ public class Array {
     }
 
     // 往数组后面添加元素
-    public void addLast(int e){
+    public void addLast(E e){
         this.add(size, e);
     }
 
     // 添加第一个元素
-    public void addFirst(int e){
+    public void addFirst(E e){
         this.add(0, e);
     }
 
-    public void add(int index, int ele){
+    public void add(int index, E ele){
         if (size == this.data.length) {
             throw new IllegalArgumentException("Add failed, the array is full");
         }
@@ -56,7 +56,7 @@ public class Array {
     }
 
     // 获取索引位置的元素
-    public int get(int index){
+    public E get(int index){
         if (index < 0 || index > size-1){
             throw new IllegalArgumentException("Get failed. Index is illegal.");
         }
@@ -64,7 +64,7 @@ public class Array {
     }
 
     // 修改索引位置元素
-    public void set(int index, int ele) {
+    public void set(int index, E ele) {
         if (index < 0 || index > size-1){
             throw new IllegalArgumentException("Get failed. Index is illegal.");
         }
@@ -72,10 +72,10 @@ public class Array {
     }
 
     // 是否包含要找的元素
-    public boolean contains(int ele){
+    public boolean contains(E ele){
         int i;
         for (i = 0; i < size; i++) {
-            if (data[i] == ele) {
+            if (ele.equals(data[i]) ) {
                 return true;
             }
         }
@@ -83,10 +83,10 @@ public class Array {
     }
 
     // 查找元素并返回索引
-    public int find(int ele){
+    public int find(E ele){
         int i;
         for (i = 0; i < size; i++) {
-            if (data[i] == ele) {
+            if (data[i].equals(ele)) {
                 return i;
             }
         }
@@ -99,7 +99,7 @@ public class Array {
         int i;
         int j = 0;
         for (i = 0; i<size; i++) {
-            if (data[i] == e){
+            if (data[i].equals(e)){
                 indexs[j] = i;
                 j++;
             }
@@ -108,12 +108,12 @@ public class Array {
     }
 
     // 删除索引位置元素并返回该元素值
-    public int remove(int index){
+    public E remove(int index){
         if (index < 0 || index >= size) {
             throw new IllegalArgumentException("Move failed. Index is illegal.");
         }
         int i;
-        int res = data[index];
+        E res = data[index];
         //TODO: You can write like this, but is wrong. why ?
         // 当i=index+1 && i<size时 这里就不成立所以就避免了data[i] 下标越界，而注释的地方并没有。妙啊~~~
 //        for (i = index; i < size; i++) {
@@ -122,22 +122,28 @@ public class Array {
         for (i = index + 1; i < size; i++) {
             data[i-1] = data[i];
         }
-        size--;
+        size--; // loitering objects != memory leak
+        /*
+        * 如果没有这句话，data[size] 指向了一个对象，这不同于基本数据类型，基本数据有默认值，所以你写多少都没有关系
+        * 而对象有引用，虽然此时访问不到，但是它是一个loitering object Java垃圾回收机制是不会收掉，这里收不收也不是必须的
+        * 所以下面这一行代码是可写可不写。
+        */
+        data[size] = null;
         return res;
     }
 
     // 删除首个元素
-    public int removeFirst() {
+    public E removeFirst() {
         return remove(0);
     }
 
     // 删除最后一个元素
-    public int removeLast(){
+    public E removeLast(){
         return remove(size-1);
     }
 
     // 删除某个元素
-    public boolean removeElement(int ele){
+    public boolean removeElement(E ele){
         int index = find(ele);
         if (index != -1){
             remove(index);
@@ -176,7 +182,7 @@ public class Array {
     }
 
     public static void main(String[] args) {
-        Array arr = new Array(20);
+        Array<Integer> arr = new Array<>(20);
         int i;
         for (i = 0; i < 10; i++) {
             arr.addLast(i);
